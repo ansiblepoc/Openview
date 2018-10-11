@@ -1,0 +1,20 @@
+---
+- name: Remove OpC agent and directories
+  hosts: all
+  vars:
+    OVpath: "/opt/OV"
+    Perfpath: "/opt/perf"
+  tasks:
+  - name: Stop opcagt
+    shell: "{{ OVpath }}/bin/opcagt -stop"
+  - name: Stop performance agent
+    shell: "{{ Perfpath }}/bin/ttd -k"
+  - name: Remove OpC and Perf agent
+    shell: "{{ OVpath }}/bin/OpC/install/oainstall.sh -remove -agent -clean"
+  - name: Delete leftover directories
+    file: path={{ item }} state=absent
+    with_items:
+      - "{{ OVpath }}"
+      - "/var{{ OVpath }}"
+      - "{{ Perfpath }}"
+      - "/var{{ Perfpath }}"
